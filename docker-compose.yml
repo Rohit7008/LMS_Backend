@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:12
+    container_name: lms_db
+    restart: always
+    environment:
+      POSTGRES_USER: lmsadmin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: meeting_app
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build: .
+    container_name: lms_api
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
