@@ -1,25 +1,35 @@
 FROM python:3.8-slim
 
-# Set working directory
-WORKDIR /app
-
-# Install system deps (important for psycopg2 & bcrypt)
+# ---------------------------
+# System dependencies
+# ---------------------------
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first (Docker cache optimization)
-COPY requirements.txt .
+# ---------------------------
+# Working directory
+# ---------------------------
+WORKDIR /app
 
-# Install python deps
+# ---------------------------
+# Python dependencies
+# ---------------------------
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy app code
+# ---------------------------
+# App source
+# ---------------------------
 COPY . .
 
+# ---------------------------
 # Expose FastAPI port
+# ---------------------------
 EXPOSE 8000
 
-# Run migrations before starting server
-CMD alembic upgrade head && \ uvicorn app.main:app --host 0.0.0.0 --port 8000
+# ---------------------------
+# Run migrations + start API
+# ---------------------------
+CMD ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"]
