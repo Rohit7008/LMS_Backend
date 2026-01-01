@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 from sqlalchemy import text
 
@@ -11,6 +12,17 @@ from app.auth import create_access_token
 from app.dependencies import get_current_agent
 
 app = FastAPI(title="LMS API")
+
+# ---------- CORS ----------
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[FRONTEND_URL],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # ---------- DB ----------
 def get_db():
