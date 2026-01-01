@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 from sqlalchemy import text
-
+import os
 from .database import SessionLocal
 from . import models, schemas
 from app.security import hash_password, verify_password
